@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -32,6 +33,7 @@ module.exports = {
                 test: /\.less$/,
                 exclude: /node_modules/,
                 use: [
+                    'style-loader',
                     'css-loader',
                     'less-loader'
                 ]
@@ -47,6 +49,7 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(),
-        new HtmlWebpackPlugin({template: './app/index.html'})
+        new HtmlWebpackPlugin({template: './app/index.html'}),
+        new webpack.HotModuleReplacementPlugin()
     ]
 }
