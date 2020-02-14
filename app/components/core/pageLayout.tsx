@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Layout, Button, Menu } from 'antd';
+import { Layout, Button } from 'antd';
+import { BrowserRouter } from 'react-router-dom';
 
 import { Header as HeaderContent } from './header';
+import { MenuList } from './menu';
+import { ContentComponent } from './content'
 
 const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu, Item } = Menu;
 
 export default class PageLayout extends React.Component {
     render() {
@@ -16,17 +18,14 @@ export default class PageLayout extends React.Component {
                         <HeaderContent />
                     </Header>
                     <Layout>
-                        <Sider className='sider-menu'>
-                            <Menu
-                                mode="inline"
-                            >
-                                <SubMenu>
-                                    <Item key='demo1'>demo1</Item>
-                                    <Item key='demo2'>demo2</Item>
-                                </SubMenu>
-                            </Menu>
-                        </Sider>
-                        <Content><Button>Content</Button></Content>
+                        <BrowserRouter basename='/'>
+                            <Sider className='sider-menu'>
+                                <MenuList />
+                            </Sider>
+                            <Content>
+                                <ContentComponent />
+                            </Content>
+                        </BrowserRouter>
                     </Layout>
                 </Layout>
             </>

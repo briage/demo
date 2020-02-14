@@ -11,6 +11,7 @@ module.exports = {
     entry: {
         client: './app/index.tsx'
     },
+    watch: true,
     watchOptions: {
         ignored: /node_modules/
     },
