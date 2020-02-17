@@ -1,6 +1,7 @@
 import * as React from 'react';
+
 import { MobxReact } from '../pages/mobx-react';
-import { exact } from 'prop-types';
+import { RxJs } from '../pages/rxjs';
 
 const { Suspense } = React;
 
@@ -23,6 +24,11 @@ const routers: Array<RouterList> = [
         path: '/mobx-react',
         exact: true,
         component: routerComponent(<MobxReact />)
+    }, {
+        key: 'rxjs',
+        path: '/rxjs',
+        exact: true,
+        component: routerComponent(<RxJs />)
     }
 ];
 

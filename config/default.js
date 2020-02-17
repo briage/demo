@@ -1,3 +1,4 @@
 module.exports = {
-    port: 8080
+    serverPort: 3000,
+    clientPort: 8080
 }

@@ -3,6 +3,8 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
+const config = require('./config/default');
+
 module.exports = {
     mode: 'development',
     resolve: {
@@ -52,5 +54,16 @@ module.exports = {
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({template: './app/index.html'}),
         new webpack.HotModuleReplacementPlugin()
-    ]
+    ],
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        port: config.clientPort,
+        historyApiFallback: true,
+        open: true,
+        before: (app) => {
+            app.use('/', async (req, res, next) => {
+                await next();
+            });
+        }
+    }
 }

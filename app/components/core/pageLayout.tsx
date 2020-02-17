@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { Layout, Button } from 'antd';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, withRouter } from 'react-router-dom';
 
 import { Header as HeaderContent } from './header';
 import { MenuList } from './menu';
-import { ContentComponent } from './content'
+import { ContentComponent } from './content';
+import Breadcrumbs from './Breadcrumb'
 
-const { Header, Content, Footer, Sider } = Layout;
-
-export default class PageLayout extends React.Component {
+const { Header, Content, Sider } = Layout;
+export class PageLayout extends React.Component {
     render() {
-        console.log(11)
         return (
             <>
                 <Layout style={{height: '100vh'}}>
@@ -23,6 +22,7 @@ export default class PageLayout extends React.Component {
                                 <MenuList />
                             </Sider>
                             <Content>
+                                <Breadcrumbs />
                                 <ContentComponent />
                             </Content>
                         </BrowserRouter>
