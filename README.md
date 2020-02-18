@@ -1,0 +1,6 @@
+- 启动 npm run dev-server
+- app/config/menu.ts 菜单配置
+- app/config/router.tsx 路由配置
+- app/pages 页面文件夹
+- app/components 组件文件夹
+- server端用nodemon启动

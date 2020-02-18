@@ -10,7 +10,7 @@ module.exports = {
             },
         ],
         '@babel/preset-react',
-        '@babel/preset-typescript'
+        '@babel/preset-typescript',
     ],
     plugins: [
         [
@@ -18,6 +18,14 @@ module.exports = {
             {
                 legacy: true
             }
-        ]
+        ],
+        [
+            'import', {
+                libraryName: 'vant',
+                libraryDirectory: 'es',
+                style: true
+            }, 'vant'
+        ], 
+        '@babel/plugin-proposal-class-properties'
     ]
 }

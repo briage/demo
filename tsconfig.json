@@ -5,7 +5,8 @@
         "lib": ["ES5", "DOM"],
         "declaration": true,
         "jsx": "react",
-        "outDir": "dist"
+        "outDir": "dist",
+        "experimentalDecorators": true
     },
     "include": [
         "app/**/*",
