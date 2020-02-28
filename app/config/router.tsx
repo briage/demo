@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { MobxReact } from '../pages/mobx-react';
 import { RxJs } from '../pages/rxjs';
+import { BankActivity } from '../pages/bank-activity';
 
 const { Suspense } = React;
 
@@ -29,6 +30,11 @@ const routers: Array<RouterList> = [
         path: '/rxjs',
         exact: true,
         component: routerComponent(<RxJs />)
+    }, {
+        key: 'bank-activity',
+        path: '/bank-activity',
+        exact: true,
+        component: routerComponent(<BankActivity />)
     }
 ];
 

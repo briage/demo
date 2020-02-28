@@ -3,10 +3,13 @@
         "target": "ESNext",
         "module": "commonjs",
         "lib": ["ES5", "DOM"],
-        "declaration": true,
+        "allowJs": true,
         "jsx": "react",
         "outDir": "dist",
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true ,
+        "sourceMap": true
     },
     "include": [
         "app/**/*",

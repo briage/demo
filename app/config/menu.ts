@@ -33,6 +33,17 @@ const MENU_LIST: Array<Menu> = [
         text: 'RxJs',
         icon: 'bar',
         link: '/rxjs'
+    }, {
+        key: 'activity',
+        text: '平台活动',
+        icon: 'bars',
+        subMenus: [
+            {
+                key: 'bank-activity',
+                text: '银行活动',
+                link: '/bank-activity'
+            }
+        ]
     }
 ];
 

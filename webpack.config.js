@@ -2,20 +2,16 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin'); 
+const TerserPlugin = require('terser-webpack-plugin');
 
 const config = require('./config/default');
-const handler = (percentage, message, ...args) => {
-    // e.g. Output each progress message directly to the console:
-    console.info(percentage, message, ...args);
-  };
 module.exports = {
     mode: 'development',
     resolve: {
         extensions: ['.tsx', '.jsx', '.js', '.ts', '.json', '.less']
     },
     entry: {
-        client: './app/index.tsx'
+        client: ['./app/index.tsx'],
     },
     watch: true,
     watchOptions: {
@@ -55,7 +51,6 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({template: './app/index.html'}),
-        new webpack.HotModuleReplacementPlugin(),
         // new webpack.ProgressPlugin(handler), //打包进程
     ],
     optimization: {
@@ -73,6 +68,6 @@ module.exports = {
             app.use('/', async (req, res, next) => {
                 await next();
             });
-        }
+        },
     }
 }

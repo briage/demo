@@ -3,7 +3,9 @@ import { observable, action, computed } from 'mobx';
 import { observer, Observer } from 'mobx-react';
 import * as _ from 'lodash';
 import { Row, Col, Button, Input } from 'antd';
+import  * as Axios from 'axios';
 
+const axios = Axios.default;
 class Data {
     @observable num = 1
 }
@@ -24,11 +26,30 @@ const BaseNum = observer(({data}) => <div>{data.num}</div>);
 const ComputedNum = observer(({num}) => <div>{num.get()}</div>);
 export class MobxReact extends React.Component {
    
+    componentDidMount() {
+        
+    }
     render() {
         return (
             <>
                 <Row gutter={[16, 16]}>
                     <Col span={12}>
+                        <Button onClick={() => {
+                            // axios.post('/api/thrift/promotion/queryActivityByIdList', {
+                            //     activityIdList: [1, 2, 3],
+                            //     templateId: 5
+                            // }).then(res => {
+                            //     console.log(res)
+                            // })
+                            
+                            axios.post('/api/thrift/promotion/queryActivityByIdList', {activityIdList: [1, 2], templateId: 5}, {
+                                headers: {
+                                    "Content-type": "application/json"
+                                }
+                            }).then(res => {
+                                console.log(res)
+                            })
+                        }}>test</Button>
                         <Button onClick={add}>加法</Button>
                         <BaseNum data={data} />
                         <ComputedNum num={mul} />
