@@ -1,18 +1,18 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Input, Select, Radio } from 'antd';
+import { Input, Select, Radio, Upload } from 'antd';
 import { Props, OptionsArrayItem } from '../components/form-components/form-contorl';
 
 const { Option } = Select;
 
 export interface FormComponents_Item {
     type: string | string[],
-    component: (props: Props) => React.ReactNode
+    component: (props) => React.ReactNode
 }
 
 const FormComponents_Map: Array<FormComponents_Item> = [
     {
-        type: ['text', 'number', 'password'],
+        type: ['text', 'number', 'password', 'textarea'],
         component: (props: Props) => <Input { ...props } />
     }, {
         type: 'select',
@@ -37,7 +37,10 @@ const FormComponents_Map: Array<FormComponents_Item> = [
             )}
     }, {
         type: 'radio',
-        component : (props: Props) => <Radio.Group {...props} />
+        component: (props) => <Radio.Group {...props} />
+    }, {
+        type: 'upload',
+        component: props => <Upload {...props} />
     }
 ]
 

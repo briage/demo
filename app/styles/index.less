@@ -1,4 +1,5 @@
 @import './form-control';
+@import './grid';
 
 @footerColor: #ccc;
 @headerColor: #fff;
@@ -7,6 +8,12 @@
     font-size: 2em;
     color: @headerColor;
     margin: auto;
+    float: left;
+}
+.header-userInfo {
+    font-size: 1.3em;
+    float: right;
+    color: @headerColor
 }
 .sider-menu {
     height: 100%;
@@ -24,4 +31,21 @@
 }
 code {
     color: #fff
+}
+.login-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    width: 300px;
+    margin: auto auto;
+    padding: 10px;
+    justify-content: center;
+    border: 1px #000 solid;
+    border-radius: 5px;
+}
+.form-title {
+    font-size: 1.5em
+}
+.submit-button {
+    width: 75px;
+    margin: 0 auto
 }

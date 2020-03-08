@@ -4,46 +4,47 @@ export interface Menu {
     text: string,
     icon?: string,
     link?: string,
-    subMenus?: Array<subMenu>
+    subMenus?: Array<subMenu>,
+    auth: 2 | 3
 }
 export interface subMenu {
     key: string,
     text: string,
-    link: string
+    link: string,
+    auth: 2 | 3
 }
 
 const MENU_LIST: Array<Menu> = [
     {
-        key: 'mobx',
-        text: 'Mobx',
-        icon: 'bars',
-        subMenus: [
-            {
-                key: 'mobx-react',
-                text: 'mobx-react',
-                link: '/mobx-react'
-            }, {
-                key: 'mobx-react2',
-                text: 'mobx-react2',
-                link: '/mobx-react2'
-            }
-        ]
-    }, {
-        key: 'rxjs',
-        text: 'RxJs',
+        key: 'index',
+        text: '首页',
+        link: '/',
         icon: 'bar',
-        link: '/rxjs'
+        auth: 2
     }, {
-        key: 'activity',
-        text: '平台活动',
-        icon: 'bars',
-        subMenus: [
-            {
-                key: 'bank-activity',
-                text: '银行活动',
-                link: '/bank-activity'
-            }
-        ]
+        key: 'course',
+        text: '课程管理',
+        link: '/course',
+        icon: 'bar',
+        auth: 3
+    }, {
+        key: 'node-manager',
+        text: '课时管理',
+        link: '/node-manager',
+        icon: 'bar',
+        auth: 3
+    }, {
+        key: 'test-paper',
+        text: '试卷管理',
+        link: '/test-paper',
+        icon: 'bar',
+        auth: 2
+    }, {
+        key: 'test-manager',
+        text: '题库管理',
+        link: '/test-manager',
+        icon: 'bar',
+        auth: 2
     }
 ];
 

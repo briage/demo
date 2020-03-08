@@ -1,14 +1,13 @@
 const Koa = require('koa');
 const config = require('../config/default');
-const proxyThrift = require('./middlewares/proxy-thrift').default;
+// const proxyThrift = require('./middlewares/proxy-thrift').default;
 const koaWebpack = require('koa-webpack');
 const webpack = require('webpack');
 const webpackConfig = require('../webpack.config.js');
 const path = require('path');
-const router = require('./middlewares/router').default;
+const router = require('./middlewares/router').router;
 const koaBody = require('koa-body');
-const bodyParser = require('koa-bodyparser');
-// const bodyParser = require('koa-bodyparser')
+const sourceLoad = require('./middlewares/source-load').sourceLoad;
 
 
 
@@ -16,9 +15,14 @@ process.env.NODE_ENV = process.env.NODE_ENV === undefined ? 'development' : proc
 
 const app = new Koa();
 const compiler = webpack(webpackConfig);
-app.use(koaBody());
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+      maxFileSize: 2000 * 1024 * 1024    // 设置上传文件大小最大限制，默认2M
+  }
+}));
 app.use(router.routes());
-app.use(proxyThrift);
+app.use(sourceLoad);
 async function start() {
     const middleware = await koaWebpack({ compiler });
     app.use(middleware);
@@ -31,7 +35,7 @@ async function start() {
       } else {
         await next()
       }
-      });
+    });
     app.listen(config.serverPort);
 }
 
