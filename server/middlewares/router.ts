@@ -7,5 +7,7 @@ import './auth';
 import './course';
 import './upload';
 import './node-manager';
+import './test-manager';
+import './test-paper';
 
 export {router};

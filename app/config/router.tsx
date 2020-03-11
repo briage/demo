@@ -5,6 +5,7 @@ import { Course } from '../pages/course';
 import { TestPaper } from '../pages/test-paper';
 import { NodeManager } from '../pages/node-manager';
 import { TestManager } from '../pages/test-manager';
+import { UserCenter } from '../pages/user-center';
 
 const { Suspense } = React;
 
@@ -18,7 +19,7 @@ interface RouterList {
     key: string,
     path: string,
     exact: boolean,
-    auth: 2 | 3,
+    auth: 1 | 2 | 3,
     component: React.ReactNode
 }
 
@@ -53,6 +54,12 @@ const routers: Array<RouterList> = [
         exact: true,
         auth: 2,
         component: routerComponent(<TestManager />)
+    }, {
+        key: 'user-center',
+        path: '/user-center',
+        exact: true,
+        auth: 1,
+        component: routerComponent(<UserCenter />)
     }
 ];
 

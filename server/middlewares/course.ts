@@ -45,6 +45,10 @@ router.post('/api/course/queryCourseList', async (ctx, next) => {
     const data = _.cloneDeep(ctx.request.body);
     let sql = 'select * from class'
     let insert = [];
+    if (data.courseName) {
+        sql += ` where courseName like '%${data.courseName}%'`;
+        delete data.courseName;
+    }
     for (let item in data) {
         if (!data[item]) {
             delete data[item];

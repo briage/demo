@@ -7,42 +7,10 @@ import { Form } from '../components/form-components/form';
 import { FormContorl } from '../components/form-components/form-contorl';
 import { Button, message, Popconfirm, Upload, Icon } from 'antd';
 import { handleUserInfo } from '../util';
-
-interface userInfo_Type {
-    userName: string,
-    userId: number
-}
-interface editData_Type {
-    courseName: string,
-    labels: string,
-    teacherIds: string,
-    money: number,
-    businessId: number,
-    creatorId: number,
-    createTime: string,
-    courseId?: number,
-    image_src: string,
-    managerId: number,
-}
-interface queryData_type {
-    courseId: number,
-    courseName: string,
-    creatorId: number
-}
-interface State {
-    queryData: queryData_type,
-    editData: editData_Type,
-    tableData: any[],
-    dialogVisiabel?: boolean,
-    dialogTitle?: string,
-    loading?: boolean
-}
+import { userInfo_Type } from '../../types';
+import { State, editData_Type, queryData_type } from '../../types/course';
 
 const { useState, useEffect } = React;
-
-function checkUserInfo() {
-
-}
   
 function Course(props) {
     const userInfo: userInfo_Type = (JSON.parse(sessionStorage.getItem('userInfo')) as userInfo_Type);
@@ -54,7 +22,7 @@ function Course(props) {
             teacherIds: '',
             money: 0,
             businessId: undefined,
-            creatorId: userInfo.userId,
+            creatorId: userInfo && userInfo.userId,
             createTime: moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss'),
             image_src: '',
             managerId: undefined
@@ -116,7 +84,6 @@ function Course(props) {
             message.success('上传成功')
             setState(newState);
         }
-        
     }
     const GridProps: GridProps = {
         gridOptions: [
@@ -139,7 +106,6 @@ function Course(props) {
                 >
                     <Button key={`delete${d}`}>删除</Button>
                 </Popconfirm>
-                
             ] }
         ],
         tableData: state.tableData,
@@ -154,6 +120,7 @@ function Course(props) {
                 .then(res => {
                     if (res.data.success) {
                         const newState = _.cloneDeep(state);
+                        newState.dialogVisiabel = false;
                         newState.tableData = res.data.data;
                         setState(newState);
                     } else {
@@ -187,6 +154,7 @@ function Course(props) {
                 }
             }
             delete data[''];
+            data.creatorId = userInfo && userInfo.userId;
             data.createTime = moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss');
             axios.post(`/api/course/${data.courseId ? 'updateCourse' : 'createCourse'}`, data)
                 .then(res => {

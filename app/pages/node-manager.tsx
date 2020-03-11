@@ -6,35 +6,8 @@ import { Form } from '../components/form-components/form';
 import { FormContorl } from '../components/form-components/form-contorl';
 import { Button, message, Popconfirm, Upload, Icon } from 'antd';
 import moment from 'moment';
-
-interface userInfo_Type {
-    userName: string,
-    userId: number
-}
-interface queryData_Type {
-    subcourseId: number,
-    subcourseName: string,
-    courseId: number,
-    creatorId: number
-}
-interface editData_type {
-    subcourseName: string,
-    courseId: number,
-    video_src: string,
-    index: number,
-    teacherId: number,
-    creatorId?: number,
-    createTime?: string,
-    subcourseId?: number
-}
-interface State {
-    queryData: queryData_Type,
-    editData: editData_type,
-    tableData: any[],
-    dialogTitle: string,
-    dialogVisible: boolean,
-    loading: boolean
-}
+import { userInfo_Type } from '../../types';
+import { State, editData_type } from '../../types/node-manager';
 
 const { useState, useEffect } = React;
 
@@ -43,14 +16,14 @@ function NodeManager(props) {
         gridProps.onFetchContent();
     }, [])
     const userInfo: userInfo_Type = (JSON.parse(sessionStorage.getItem('userInfo')) as userInfo_Type);
-    const initalEditData =  {
+    const initalEditData: editData_type =  {
         subcourseName: '',
         courseId: undefined,
         video_src: '',
         index: undefined,
         teacherId: undefined,
         createTime: 'time',
-        creatorId: userInfo.userId
+        creatorId: userInfo && userInfo.userId
     }
     const initalState: State = {
         queryData: {
@@ -63,7 +36,8 @@ function NodeManager(props) {
         tableData: [],
         dialogTitle: '创建课时',
         dialogVisible: false,
-        loading: false
+        loading: false,
+        fileList: []
     }
     const [state, setState] = useState(initalState);
     const handleDialogChange = async(e) => {
@@ -81,8 +55,16 @@ function NodeManager(props) {
             }
             newState.dialogTitle = '编辑课时';
             newState.editData = line;
+            newState.fileList = [{
+                uid: 1,
+                name: line.video_src.split('/video/')[1],
+                url: line.video_src,
+                status: 'done'
+            }];
         } else {
             newState.dialogTitle = '创建课时';
+            newState.editData = initalEditData;
+            newState.fileList = [];
         }
         newState.dialogVisible = true;
         setState(newState);
@@ -102,14 +84,13 @@ function NodeManager(props) {
         const newState = _.cloneDeep(state);
         if (info.file.status === 'uploading') {
             newState.loading = true;
-            setState(newState);
-            return;
         } else if (info.file.status === 'done') {
             newState.editData.video_src = info.file.response.data;
             newState.loading = false;
-            message.success('上传成功')
-            setState(newState);
+            message.success('上传成功');
         }
+        newState.fileList = [info.file];
+        setState(newState);
     }
     const gridProps: GridProps = {
         gridOptions: [
@@ -145,6 +126,7 @@ function NodeManager(props) {
                     if (res.data.success) {
                         const newState = _.cloneDeep(state);
                         newState.tableData = res.data.data;
+                        newState.dialogVisible = false;
                         setState(newState);
                     } else {
                         message.error('查询失败')
@@ -174,6 +156,7 @@ function NodeManager(props) {
                 }
             }
             delete data[''];
+            data.creatorId = userInfo && userInfo.userId;
             data.createTime = moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss');
             axios.post(`/api/node-manage/${data.subcourseId ? 'updateNode' : 'createNode'}`, data)
                 .then(res => {
@@ -193,7 +176,7 @@ function NodeManager(props) {
                 <FormContorl type='text' name='subcourseName' label='课时名称' value={state.editData.subcourseName} key='subcourseName' />
                 <FormContorl type='number' name='courseId' label='隶属课程' value={state.editData.courseId} key='courseId' />
                 <FormContorl type='number' name='teacherId' label='授课教师' value={state.editData.teacherId} key='teacherId' />
-                <FormContorl type='upload' label='上传视频' key='video_src' action='/api/upload' onChange={handleUploadChange} listType='picture' name='video_src' showUploadList={false} >
+                <FormContorl type='upload' label='上传视频' key='video_src' action='/api/upload' onChange={handleUploadChange} listType='picture' name='video_src' fileList={state.fileList} showUploadList={true} >
                     <Button>
                         {state.loading ? <Icon type='loading' /> : <Icon type='plus' />}上传
                     </Button>

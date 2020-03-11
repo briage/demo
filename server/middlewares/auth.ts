@@ -1,6 +1,7 @@
 import { pool } from './mysql';
 import { router } from './router';
 import { query } from '../util';
+import _ from 'lodash';
 
 router.get('/api/auth', async(ctx, next) => {
     const token = ctx.cookies.get('userToken');
@@ -21,11 +22,21 @@ router.get('/api/auth', async(ctx, next) => {
 })
 
 router.post('/api/getUserInfo', async ctx => {
-    const data = ctx.request.body;
-    const res = await query('select * from userInfo where ?', data);
+    const data = _.cloneDeep(ctx.request.body);
+    let sql = 'select * from userInfo'
+    let insert = [];
+    for (let item in data) {
+        if (!data[item]) {
+            delete data[item];
+        } else {
+            sql += sql.match('where') ? ' and ?' : ' where ?';
+            insert.push({[item]: data[item]})
+        }
+    }
+    const res = await query(sql, insert);
     ctx.status = 200;
     ctx.body = {
         success: true,
-        data: res[0]
+        data: res
     }
 })

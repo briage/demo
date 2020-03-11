@@ -1,13 +1,21 @@
 import * as React from 'react';
+import moment from 'moment';
+
+const { useState } = React;
 
 function Index(props) {
-
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+    const [time, setTime] = useState(moment(new Date().getTime()).format('HH:mm:ss'));
+    setTimeout(() => {
+        setTime(moment(new Date().getTime()).format('HH:mm:ss'));
+    }, 1000);
     return (
         <>
-            <div>
-                为了赚更多钱，快些配置你的课程吧！！<br/>
-                早配早赚钱！！<br/>
-                我配了，你呢？你配吗？<br/>
+            <div className='login-wrapper'>
+                <h1>
+                    Hello,{ userInfo && userInfo.userName }<br/>
+                    { time }
+                </h1>
             </div>
         </>
     )

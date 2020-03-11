@@ -11,7 +11,7 @@ export interface OptionsArrayItem {
 export interface Props {
     value: any,
     name: string,
-    key: string,
+    key?: string,
     type: string,
     style?: object,
     label?: string,

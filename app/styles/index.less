@@ -4,6 +4,12 @@
 @footerColor: #ccc;
 @headerColor: #fff;
 
+body {
+    height: 100%;
+    #app {
+        height: 100%;
+    }
+}
 .header-title {
     font-size: 2em;
     color: @headerColor;
@@ -36,10 +42,12 @@ code {
     display: flex;
     flex-wrap: wrap;
     width: 300px;
-    margin: auto auto;
+    margin: auto;
+    transform: translateY(50%);
     padding: 10px;
     justify-content: center;
-    border: 1px #000 solid;
+    border: 1px #ccc solid;
+    box-shadow: 0 0 5px #000 ;
     border-radius: 5px;
 }
 .form-title {

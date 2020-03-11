@@ -21,7 +21,8 @@ export interface GridProps {
     onDialogFormSubmit?: () => void,
     dialogVisable?: boolean,
     onCloseDialog?: () => void,
-    dialogTitle?: string
+    dialogTitle?: string,
+    dialogWidth?: number | string
 }
 
 const { useEffect } = React;
@@ -29,33 +30,35 @@ const { useEffect } = React;
 function Grid(props: GridProps) {
     let { searchRender, onFetchContent, searchButtonExact, gridOptions, 
         dialogContentRender, onDialogFormSubmit, tableData, handleSearchChange,
-        dialogVisable, onCloseDialog, dialogTitle } = props;
+        dialogVisable, onCloseDialog, dialogTitle, dialogWidth } = props;
     dialogVisable = !!dialogVisable;
     return (
         <>
             {
                 dialogContentRender && <Modal
+                    key='dialog-modal'
                     visible={dialogVisable}
                     onOk={onDialogFormSubmit}
                     onCancel={onCloseDialog}
                     title={ dialogTitle ? dialogTitle : '创建' }
                     okText='保存'
+                    width={dialogWidth}
                 >
                     { dialogContentRender() }
                 </Modal>
             }
-            <Form className='' onChange={handleSearchChange} onSubmit={onFetchContent}>
-                <div className='search-form'>
+            <Form key='search-form' className='' onChange={handleSearchChange} onSubmit={onFetchContent}>
+                <div key='search-control' className='search-form'>
                         { searchRender() }
                 </div>
-                <div className='search-button'>
-                    <Input className='query-button' type='submit' value='查询' />
+                <div key='search-button' className='search-button'>
+                    <Input key='query-button' className='query-button' type='submit' value='查询' />
                     { searchButtonExact && searchButtonExact() }
                 </div>
             </Form>
                 
-            <div className='grid-table'>
-                <Table columns={gridOptions} rowKey={(record, index) => `row${index}`} dataSource={tableData} />
+            <div key='grid-table' className='grid-table'>
+                <Table key='show-table' columns={gridOptions} rowKey={(record, index) => `row${index}`} dataSource={tableData} />
             </div>
         </>
     )

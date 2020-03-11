@@ -47,18 +47,18 @@ export class PageLayout extends React.Component {
                         <Login/>
                     </Route>
                     <Route key='content' path='/'>
-                        <Layout style={{height: '100vh'}}>
+                        <Layout key='layout' style={{height: '100vh'}}>
                             <Header>
-                                <HeaderContent userInfo={this.state.userInfo} />
+                                <HeaderContent key='header-content' userInfo={this.state.userInfo} />
                             </Header>
                             <Layout>
-                                <BrowserRouter basename='/'>
-                                    <Sider className='sider-menu'>
-                                        <MenuList userInfo={this.state.userInfo} />
+                                <BrowserRouter key='browser-router' basename='/'>
+                                    <Sider key='browser-sider' className='sider-menu'>
+                                        <MenuList key='menu-list' userInfo={this.state.userInfo} />
                                     </Sider>
                                     <Content>
-                                        <Breadcrumbs />
-                                        <ContentComponent userInfo={this.state.userInfo} />
+                                        <Breadcrumbs key='breadcrumbs' />
+                                        <ContentComponent key='content' userInfo={this.state.userInfo} />
                                     </Content>
                                 </BrowserRouter>
                             </Layout>

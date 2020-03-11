@@ -41,6 +41,10 @@ router.post('/api/node-manage/queryNodeList', async ctx => {
     const data = _.cloneDeep(ctx.request.body);
     let sql = 'select * from subcourses';
     let insert = [];
+    if (data.subcourseName) {
+        sql += ` where subcourseName like '%${data.subcourseName}%'`;
+        delete data.subcourseName;
+    }
     for (let item in data) {
         if (!data[item]) {
             delete data[item];

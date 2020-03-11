@@ -5,13 +5,13 @@ export interface Menu {
     icon?: string,
     link?: string,
     subMenus?: Array<subMenu>,
-    auth: 2 | 3
+    auth: 1 | 2 | 3
 }
 export interface subMenu {
     key: string,
     text: string,
     link: string,
-    auth: 2 | 3
+    auth: 1 | 2 | 3
 }
 
 const MENU_LIST: Array<Menu> = [
@@ -45,6 +45,12 @@ const MENU_LIST: Array<Menu> = [
         link: '/test-manager',
         icon: 'bar',
         auth: 2
+    }, {
+        key: 'user-center',
+        text: '用户中心',
+        link: '/user-center',
+        icon: 'bar',
+        auth: 1
     }
 ];
 
