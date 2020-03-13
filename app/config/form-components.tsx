@@ -1,19 +1,23 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Input, Select, Radio } from 'antd';
+import { Input, Select, Radio, Upload } from 'antd';
 import { Props, OptionsArrayItem } from '../components/form-components/form-contorl';
+import { MultifyInput } from '../components/form-components/multify-input';
 
 const { Option } = Select;
 
 export interface FormComponents_Item {
     type: string | string[],
-    component: (props: Props) => React.ReactNode
+    component: (props) => React.ReactNode
 }
 
 const FormComponents_Map: Array<FormComponents_Item> = [
     {
         type: ['text', 'number', 'password'],
         component: (props: Props) => <Input { ...props } />
+    }, {
+        type: 'textarea',
+        component: (props: Props) => <Input.TextArea {...props} />
     }, {
         type: 'select',
         component: (props: Props) => {
@@ -26,7 +30,7 @@ const FormComponents_Map: Array<FormComponents_Item> = [
                     )
                 } else {
                     optionsList.push(
-                        <Option key={item} value={item}>{ options[item] }</Option>
+                        <Option key={item} value={+item}>{ options[item] }</Option>
                     )
                 }
             }
@@ -37,7 +41,13 @@ const FormComponents_Map: Array<FormComponents_Item> = [
             )}
     }, {
         type: 'radio',
-        component : (props: Props) => <Radio.Group {...props} />
+        component: (props) => <Radio.Group {...props} />
+    }, {
+        type: 'upload',
+        component: props => <Upload action='/api/upload' {...props} />
+    }, {
+        type: 'multify-input',
+        component: props => <MultifyInput {...props} />
     }
 ]
 

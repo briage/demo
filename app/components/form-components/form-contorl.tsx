@@ -11,7 +11,7 @@ export interface OptionsArrayItem {
 export interface Props {
     value: any,
     name: string,
-    key: string,
+    key?: string,
     type: string,
     style?: object,
     label?: string,
@@ -19,16 +19,18 @@ export interface Props {
     defaultValue?: any,
     disabled?: boolean,
     layout?: number,
-    onChange?: (event: React.FormEvent) => void
+    onChange?: (event?: React.FormEvent) => void,
 }
 
-function FormContorl(props: Props) {
+function FormContorl(props) {
     return (
         <div className={`form-control ${props.layout ? `layout-${props.layout}` : 'layout-1'}`}>
             { props.label && <span className='label'>{ props.label }</span> }
-            {
-                _.filter(FormComponents_Map, item => item.type.indexOf(props.type) > -1)[0].component(props)
-            }
+            <div className='component'>
+                {
+                    _.filter(FormComponents_Map, item => item.type.indexOf(props.type) > -1)[0].component(props)
+                }
+            </div>
         </div>
     )
 }

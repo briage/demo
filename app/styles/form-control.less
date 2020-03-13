@@ -1,16 +1,23 @@
 .form-control {
     display: flex;
     margin: 10px 0;
+    overflow: auto;
+    .label {
+        margin: auto 10px;
+        display: inline-block;
+        width: 25%;
+        text-align: right;
+        overflow: auto;
+    }
+    .component {
+        width: 75%;
+        margin: auto 0;
+        overflow: auto;
+    }
 }
 .form {
     display: flex;
     flex-wrap: wrap;
-}
-.label {
-    margin: auto 10px;
-    display: inline-block;
-    width: 25%;
-    text-align: right;
 }
 .layout-1 {
     flex-basis: 100%;
@@ -23,4 +30,26 @@
 }
 .layout-4 {
     flex-basis: 25%;
+}
+
+.multify-input-wrapper {
+    border: 1px #ccc solid;
+    border-radius: 4px;
+    .multify-row {
+        display: flex;
+        border-bottom: 1px #ccc solid;
+        padding: 5px;
+        .multify-label {
+            flex-basis: 75%;
+            padding: 0 5px;
+            margin: auto 0;
+            overflow: auto
+        };
+        .multify-button {
+            flex-basis: 25%;
+            padding: 0 5px;
+            display: flex;
+            align-content: flex-end;
+        }
+    }
 }

@@ -1,8 +1,11 @@
 import * as React from 'react';
 
-import { MobxReact } from '../pages/mobx-react';
-import { RxJs } from '../pages/rxjs';
-import { BankActivity } from '../pages/bank-activity';
+import { Index } from '../pages/index';
+import { Course } from '../pages/course';
+import { TestPaper } from '../pages/test-paper';
+import { NodeManager } from '../pages/node-manager';
+import { TestManager } from '../pages/test-manager';
+import { UserCenter } from '../pages/user-center';
 
 const { Suspense } = React;
 
@@ -16,25 +19,47 @@ interface RouterList {
     key: string,
     path: string,
     exact: boolean,
+    auth: 1 | 2 | 3,
     component: React.ReactNode
 }
 
 const routers: Array<RouterList> = [
     {
-        key: 'mobx-react',
-        path: '/mobx-react',
+        key: 'index',
+        path: '/',
         exact: true,
-        component: routerComponent(<MobxReact />)
+        auth: 2,
+        component: routerComponent(<Index />)
     }, {
-        key: 'rxjs',
-        path: '/rxjs',
+        key: 'course',
+        path: '/course',
         exact: true,
-        component: routerComponent(<RxJs />)
+        auth: 3,
+        component: routerComponent(<Course />)
     }, {
-        key: 'bank-activity',
-        path: '/bank-activity',
+        key: 'test-paper',
+        path: '/test-paper',
         exact: true,
-        component: routerComponent(<BankActivity />)
+        auth: 2,
+        component: routerComponent(<TestPaper />)
+    }, {
+        key: 'node-manager',
+        path: '/node-manager',
+        exact: true,
+        auth: 3,
+        component: routerComponent(<NodeManager />)
+    }, {
+        key: 'test-manager',
+        path: '/test-manager',
+        exact: true,
+        auth: 2,
+        component: routerComponent(<TestManager />)
+    }, {
+        key: 'user-center',
+        path: '/user-center',
+        exact: true,
+        auth: 1,
+        component: routerComponent(<UserCenter />)
     }
 ];
 
