@@ -47,6 +47,7 @@ function TestPaper(props) {
         usedCount: 0,
         type: 1,
         teacherId: undefined,
+        isTest: 0,
         creatorId: userInfo && userInfo.userId,
         createTime: 'time'
     }
@@ -180,6 +181,7 @@ function TestPaper(props) {
                 <FormContorl type='number' name='courseId' key='courseId' value={state.editData.courseId} label='关联课程ID' placeholder='若无关联课程可不填' />
                 <FormContorl type='select' name='diffculty' key='diffculty' value={state.editData.diffculty} label='难度' options={DIFFCULTY} onChange={handleChange.bind(this, ['editData', 'diffculty'])} />
                 <FormContorl type='text' name='labels' key='labels' value={state.editData.labels} label='标签' />
+                <FormContorl type='radio' name='isTest' key='isTest' label='是否为评测卷' value={state.editData.isTest} options={[{label: '否', value: 0}, {label: '是', value: 1}]} />
                 <FormContorl type='radio' name='type' label='组卷方式' key='type' value={+state.editData.type} options={TYPE} />
                 { +state.editData.type === 0 && [
                     <FormContorl type='textarea' name='onlyChoiceIds' key='onlyChoiceIds' label='单选题ID' value={state.editData.onlyChoiceIds} placeholder='若无该题型可不填id之间以;隔开' />,

@@ -17,6 +17,7 @@ interface editData_Type {
     listenNum?: number,
     writeNum?: number,
     teacherId?: number,
+    isTest?: number,
     createTime: string,
     creatorId: number
 }

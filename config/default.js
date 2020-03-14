@@ -1,6 +1,6 @@
 module.exports = {
-    serverPort: 8080,
-    clientPort: 8080,
+    serverPort: 8888,
+    clientPort: 8888,
     database: {
       database: 'english',
       user: 'root',

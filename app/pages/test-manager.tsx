@@ -16,7 +16,8 @@ const TYPE = {
     1: '单选',
     2: '多选',
     3: '作文',
-    4: '听力'
+    4: '听力',
+    5: '听力附属题'
 }
 const DIFFCULTY = {
     0: '全部',
@@ -42,7 +43,9 @@ function TestManager(props) {
         options: [],
         diffculty: 1,
         achivementRate: 100,
-        usedNum: 0
+        usedNum: 0,
+        linkProblemIds: '',
+        linkListenId: undefined
     }
     const initalState: State = {
         queryData: {
@@ -179,15 +182,19 @@ function TestManager(props) {
             <Form onChange={handleChange.bind(this, 'editData')} onSubmit={() => {}} >
                 <FormContorl type='textarea' key='title' name='title' value={state.editData.title} label='题目' />
                 <FormContorl type='select' key='type' name='type' value={state.editData.type} label='题型' options={TYPE} defaultValue={1} onChange={handleSelectChange.bind(this, ['editData', 'type'])} />
-                { state.editData.type != 3 && <FormContorl type='multify-input' key='options' name='options' value={state.editData.options} label='选项' onChange={handleSelectChange.bind(this, ['editData', 'options'])} /> }
+                { (state.editData.type != 3 && state.editData.type !== 4) && <FormContorl type='multify-input' key='options' name='options' value={state.editData.options} label='选项' onChange={handleSelectChange.bind(this, ['editData', 'options'])} /> }
                 { state.editData.type == 2 && <FormContorl type='number' key='answerNum' name='answerNum' value={state.editData.answerNum} label='答案数量' /> }
-                { state.editData.type == 4 && <FormContorl type='upload' key='music_src' name='music_src' showUploadList={true} fileList={state.fileList} onChange={handleUpdateChange} label='听力音频上传'>   
+                { state.editData.type == 4 && [<FormContorl type='upload' key='music_src' name='music_src' showUploadList={true} fileList={state.fileList} onChange={handleUpdateChange} label='听力音频上传'>   
                     {
                         <Button>
                             {state.loading ? <Icon type='loading' /> : <Icon type='plus' />} 上传
                         </Button>
                     }
-                    </FormContorl> }
+                    </FormContorl>,
+                    <FormContorl type='text' name='linkProblems' label='附属题ID' value={state.editData.linkProblemIds} key='linkProblemIds' />]    
+                }{
+                    state.editData.type == 5 && <FormContorl type='number' label='所属听力题ID' value={state.editData.linkListenId} key='linkListenId' name='linkListenId' />
+                }
                 <FormContorl type='text' key='answer' name='answer' value={state.editData.answer} label='答案' placeholder='多个答案以;隔开' />
                 <FormContorl type='textarea' key='analysis' name='analysis' value={state.editData.analysis} label='解析' />
                 <FormContorl type='select' key='diffculty' name='diffculty' defaultValue={1} options={DIFFCULTY} value={+state.editData.diffculty} onChange={handleSelectChange.bind(this, ['editData', 'diffculty'])} label='难度' />

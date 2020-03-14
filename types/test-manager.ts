@@ -13,7 +13,9 @@ interface editData_Type {
     labels: string,
     diffculty: number,
     achivementRate: number,
-    usedNum: number
+    usedNum: number,
+    linkProblemIds?: string,
+    linkListenId: number
 }
 interface FileList {
     uid: number,

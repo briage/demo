@@ -8,7 +8,7 @@ import { FormContorl } from '../components/form-components/form-contorl';
 import { Button, message, Popconfirm, Upload, Icon } from 'antd';
 import { handleUserInfo } from '../util';
 import { userInfo_Type } from '../../types';
-import { State, editData_Type, queryData_type } from '../../types/course';
+import { State } from '../../types/course';
 
 const { useState, useEffect } = React;
   
@@ -25,7 +25,8 @@ function Course(props) {
             creatorId: userInfo && userInfo.userId,
             createTime: moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss'),
             image_src: '',
-            managerId: undefined
+            managerId: undefined,
+            introduceInfo: ''
         },
         queryData: {
             courseId: undefined,
@@ -56,6 +57,7 @@ function Course(props) {
             newState.dialogTitle = '编辑课程';
             newState.editData = line;
         } else {
+            newState.editData = initalState.editData;
             newState.dialogTitle = '创建课程';
         }
         newState.dialogVisiabel = true;
@@ -180,6 +182,7 @@ function Course(props) {
                 <FormContorl type='number' name='money' label='售价' value={state.editData.money} key='money' />
                 <FormContorl type='number' name='businessId' label='商家ID' value={state.editData.businessId} key='businessId' />
                 <FormContorl type='number' name='managerId' label='班主任ID' value={state.editData.managerId} key='managerId' />
+                <FormContorl type='textarea' name='introduceInfo' label='课程简介' value={state.editData.introduceInfo} key='introduceInfo' />
             </Form>
         ),
         dialogVisable: state.dialogVisiabel,

@@ -10,7 +10,7 @@ router.post('/api/upload', async ctx => {
     }
     const reader = fs.createReadStream(files[key].path);
     const filePath = `D:/lbhSource/${files[key].type.match('image') ? 'img' : 'video'}/${files[key].name}`;
-    const remoteFilePath = `http://localhost:8080/server/static/${files[key].type.match('image') ? 'img' : 'video'}/${files[key].name}`;
+    const remoteFilePath = `http://192.168.43.136:8888/server/static/${files[key].type.match('image') ? 'img' : 'video'}/${files[key].name}`;
     const wR = fs.createWriteStream(filePath);
     reader.pipe(wR);
     ctx.status = 200;

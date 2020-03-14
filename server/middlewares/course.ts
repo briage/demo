@@ -45,23 +45,83 @@ router.post('/api/course/queryCourseList', async (ctx, next) => {
     const data = _.cloneDeep(ctx.request.body);
     let sql = 'select * from class'
     let insert = [];
+    let isPage = false;
+    const offset = data.offset;
+    const labels = data.labels;
+    const selfset = data.selfset;
+    const hot = data.hot;
+    delete data.hot;
+    delete data.selfset;
+    delete data.labels;
+    if (!_.isNaN(+offset)) {
+        isPage = true;
+    }
+    delete data.offset;
     if (data.courseName) {
         sql += ` where courseName like '%${data.courseName}%'`;
-        delete data.courseName;
     }
+    delete data.courseName;
+    if (data.startMoney && data.endMoney) {
+        sql += `${sql.match ('where') ? ' and' : ' where'} money between ${data.startMoney} and ${data.endMoney}`;
+    }
+    delete data.startMoney;
+    delete data.endMoney;
+    console.log(data)
     for (let item in data) {
-        if (!data[item]) {
+        if (data[item] === undefined || data[item] === '') {
             delete data[item];
         } else {
-            sql += sql.match('where') ? 'and ?' : ' where ?';
+            sql += sql.match('where') ? ' and ?' : ' where ?';
             insert.push({[item]: data[item]})
         }
     }
-    const res = await query(sql, insert);
+    let res: any[] = <any[]>(await query(sql, insert));
+    let start = 0;
+    if (_.isNumber(offset) && offset > 0) {
+        start = offset * 10;
+    }
+    let useSelfset = !!selfset;
+    for (let label in labels) {
+        if (label) {
+            useSelfset = false;
+            break;
+        }
+    }
+    res = res.filter(item => {
+        let isPass = true;
+        if (!useSelfset) {
+            for (let label in labels) {
+                if (item.labels.indexOf(label) === -1) {
+                    isPass = false;
+                    break;
+                }
+            }
+        } else {
+            isPass = false
+            for (let selfsetItem in selfset) {
+                if (item.labels.indexOf(selfsetItem) !== -1) {
+                    isPass = true;
+                    break;
+                }
+            }
+        }
+        return isPass;
+    })
+    if (hot) {
+        res = res.sort((a, b) => {
+            const aUsedNum = a.studentIds ? a.studentIds.split(/;|；/).length : 0;
+            const bUsedNum = b.studentIds ? b.studentIds.split(/;|；/).length : 0;
+            return bUsedNum - aUsedNum;
+        });
+    }
+    console.log(sql)
+    const total = res.length;
+    const resData = _.isNumber(offset) ? res.splice(start, 10) : res;
     ctx.status = 200;
     ctx.body = {
         success: true,
-        data: res
+        data: resData,
+        total
     }
 })
 router.post('/api/course/deleteCourse', async ctx => {

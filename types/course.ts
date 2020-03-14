@@ -10,6 +10,7 @@ interface editData_Type {
     courseId?: number,
     image_src: string,
     managerId: number,
+    introduceInfo: string
 }
 interface queryData_type {
     courseId: number,
