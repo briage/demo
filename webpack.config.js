@@ -49,7 +49,7 @@ module.exports = {
         ]
     },
     plugins: [
-        // new CleanWebpackPlugin(),
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({template: './app/index.html'}),
         // new webpack.ProgressPlugin(handler), //打包进程
     ],

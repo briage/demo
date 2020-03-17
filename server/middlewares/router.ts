@@ -9,5 +9,6 @@ import './upload';
 import './node-manager';
 import './test-manager';
 import './test-paper';
+import './userInfo';
 
 export {router};

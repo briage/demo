@@ -66,7 +66,6 @@ router.post('/api/course/queryCourseList', async (ctx, next) => {
     }
     delete data.startMoney;
     delete data.endMoney;
-    console.log(data)
     for (let item in data) {
         if (data[item] === undefined || data[item] === '') {
             delete data[item];
@@ -80,33 +79,41 @@ router.post('/api/course/queryCourseList', async (ctx, next) => {
     if (_.isNumber(offset) && offset > 0) {
         start = offset * 10;
     }
-    let useSelfset = !!selfset;
+    let useSelfset = false;
+    for (let item in selfset) {
+        if (item) {
+            useSelfset = true;
+        }
+    }
     for (let label in labels) {
         if (label) {
             useSelfset = false;
             break;
         }
     }
-    res = res.filter(item => {
-        let isPass = true;
-        if (!useSelfset) {
+    if (useSelfset && _.isObject(selfset)) {
+        res = res.filter(item => {
+            let isPass = false;
+            for (let selfsetItem in selfset) {
+                if (selfsetItem && item.labels.indexOf(selfsetItem) !== -1) {
+                    isPass = true;
+                    break;
+                }
+            }
+            return isPass;
+        })
+    } else {
+        res = res.filter(item => {
+            let isPass = true;
             for (let label in labels) {
                 if (item.labels.indexOf(label) === -1) {
                     isPass = false;
                     break;
                 }
             }
-        } else {
-            isPass = false
-            for (let selfsetItem in selfset) {
-                if (item.labels.indexOf(selfsetItem) !== -1) {
-                    isPass = true;
-                    break;
-                }
-            }
-        }
-        return isPass;
-    })
+            return isPass;
+        })
+    }
     if (hot) {
         res = res.sort((a, b) => {
             const aUsedNum = a.studentIds ? a.studentIds.split(/;|；/).length : 0;
@@ -114,7 +121,6 @@ router.post('/api/course/queryCourseList', async (ctx, next) => {
             return bUsedNum - aUsedNum;
         });
     }
-    console.log(sql)
     const total = res.length;
     const resData = _.isNumber(offset) ? res.splice(start, 10) : res;
     ctx.status = 200;

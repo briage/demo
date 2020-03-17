@@ -151,12 +151,24 @@ router.post('/api/test-paper/queryTestPaper', async ctx => {
     const data = _.cloneDeep(ctx.request.body);
     let sql = 'select * from testpapers';
     let queryData = [];
-    if (data.labels) {
-        sql += ` where labels like '%${data.labels}%'`
-        delete data.labels;
+    let filterData = {};
+    const labels = data.labels && data.labels.split(/;|；/).filter(item => !!item);
+    const labelList = {};
+    labels.forEach(item => labelList[item] = true);
+    const selfset = data.selfset;
+    const hot = data.hot;
+    const offset = data.offset;
+    delete data.offset;
+    delete data.hot;
+    delete data.labels;
+    delete data.selfset;
+    if (labels) {
+        filterData = labelList;
+    } else {
+        filterData = selfset;
     }
     if (data.testpaperName) {
-        sql += `${sql.match('where') ? 'and' : 'where'} labels like '%${data.labels}%'`
+        sql += `${sql.match('where') ? 'and' : 'where'} testpaper like '%${data.testpaperName}%'`
         delete data.testpaperName;
     }
     for (let item in data) {
@@ -167,11 +179,26 @@ router.post('/api/test-paper/queryTestPaper', async ctx => {
             queryData.push({[item]: data[item]});
         }
     }
-    const res = await query(sql, queryData);
+    console.log(sql, queryData)
+    const res:any[] = <any[]>(await query(sql, queryData));
+    let resData = res.filter(item => {
+        for (let label in filterData) {
+            if (item.labels.indexOf(label) !== -1) {
+                return false;
+            }
+        }
+        return true;
+    });
+    if (hot) {
+        resData = resData.sort((a, b) => b.usedCount - a.usedCount);
+    }
+    if (_.isNumber(+offset)) {
+        resData = resData.splice(offset * 10, 10);
+    }
     ctx.status = 200;
     ctx.body = {
         success: true,
-        data: res
+        data: resData
     }
 })
 
