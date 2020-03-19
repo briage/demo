@@ -58,7 +58,7 @@ router.post('/api/course/queryCourseList', async (ctx, next) => {
     }
     delete data.offset;
     if (data.courseName) {
-        sql += ` where courseName like '%${data.courseName}%'`;
+        sql += ` where courseName like '%${data.courseName.split('').join('%')}%'`;
     }
     delete data.courseName;
     if (data.startMoney && data.endMoney) {

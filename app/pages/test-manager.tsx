@@ -191,7 +191,7 @@ function TestManager(props) {
                         </Button>
                     }
                     </FormContorl>,
-                    <FormContorl type='text' name='linkProblems' label='附属题ID' value={state.editData.linkProblemIds} key='linkProblemIds' />]    
+                    <FormContorl type='text' name='linkProblemIds' label='附属题ID' value={state.editData.linkProblemIds} key='linkProblemIds' />]    
                 }{
                     state.editData.type == 5 && <FormContorl type='number' label='所属听力题ID' value={state.editData.linkListenId} key='linkListenId' name='linkListenId' />
                 }
@@ -207,6 +207,12 @@ function TestManager(props) {
             data.creatorId = userInfo && userInfo.userId;
             data.createTime = moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss');
             const isEdit = !!data.problemId;
+            if (data.type != 5) {
+                delete data.linkListenId;
+            } 
+            if (data.type != 4) {
+                delete data.linkProblemIds;
+            }
             for (let item in data) {
                 if (item !== 'music_src' && item !== 'usedNum' && !data[item]) {
                     message.warn('请输入完整信息');

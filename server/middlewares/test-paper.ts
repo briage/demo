@@ -2,8 +2,20 @@ import { router } from './router';
 import { query } from '../util';
 import _ from 'lodash';
 
+const STAGE = {
+    '小学': true,
+    '初中': true,
+    '高中': true,
+    '大学': true,
+    '四级': true,
+    '六级': true,
+    '雅思': true,
+    '托福': true
+}
+
 async function queryProblemIds(sql, values, num) {
     const res: any[] = <any[]>(await query(sql, values));
+    console.log(sql, values, res)
     let ids = '';
     for (let i = 0; i < +num; i ++) {
         let index = Math.floor(Math.random() * res.length);
@@ -15,6 +27,16 @@ async function queryProblemIds(sql, values, num) {
 async function autoCreateTestPaper(data) {
     let sql = `select * from problems where ?`;
     let values: any[] = [];
+    const selfset = data.selfset;
+    delete data.selfset;
+    data.labels = data.labels || '';
+    if (selfset) {
+        for (let item in selfset) {
+            if (STAGE[item]) {
+                data.labels += item;
+            }
+        }
+    }
     if (data.diffculty > 0) {
         values.push({diffculty: data.diffculty});
         sql += ' and ?'
@@ -88,6 +110,7 @@ router.post('/api/test-paper/createTestPaper', async ctx => {
     delete data.multifyChoiceNum;
     delete data.listenNum;
     delete data.writeNum;
+    data.usedCount = 0;
     const res = await query('insert into testpapers set ?', data);
     ctx.status = 200;
     ctx.body = {
@@ -154,7 +177,6 @@ router.post('/api/test-paper/queryTestPaper', async ctx => {
     let filterData = {};
     const labels = data.labels && data.labels.split(/;|；/).filter(item => !!item);
     const labelList = {};
-    labels.forEach(item => labelList[item] = true);
     const selfset = data.selfset;
     const hot = data.hot;
     const offset = data.offset;
@@ -163,12 +185,13 @@ router.post('/api/test-paper/queryTestPaper', async ctx => {
     delete data.labels;
     delete data.selfset;
     if (labels) {
+        labels && labels.forEach(item => labelList[item] = true);
         filterData = labelList;
     } else {
         filterData = selfset;
     }
     if (data.testpaperName) {
-        sql += `${sql.match('where') ? 'and' : 'where'} testpaper like '%${data.testpaperName}%'`
+        sql += `${sql.match('where') ? ' and' : ' where'} testpaperName like '%${data.testpaperName}%'`
         delete data.testpaperName;
     }
     for (let item in data) {
@@ -179,26 +202,37 @@ router.post('/api/test-paper/queryTestPaper', async ctx => {
             queryData.push({[item]: data[item]});
         }
     }
-    console.log(sql, queryData)
     const res:any[] = <any[]>(await query(sql, queryData));
-    let resData = res.filter(item => {
-        for (let label in filterData) {
-            if (item.labels.indexOf(label) !== -1) {
-                return false;
-            }
+    let isFilter = false;
+    for (let item in filterData) {
+        if (item) {
+            isFilter = true;
+            break;
         }
-        return true;
-    });
+    }
+    let resData = res;
+    if (isFilter) {
+        resData = res.filter(item => {
+            for (let label in filterData) {
+                if (item.labels.indexOf(label) !== -1) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
     if (hot) {
         resData = resData.sort((a, b) => b.usedCount - a.usedCount);
     }
+    const total = resData.length;
     if (_.isNumber(+offset)) {
         resData = resData.splice(offset * 10, 10);
     }
     ctx.status = 200;
     ctx.body = {
         success: true,
-        data: resData
+        data: resData,
+        total
     }
 })
 

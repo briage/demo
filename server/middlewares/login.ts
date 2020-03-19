@@ -30,7 +30,9 @@ router.post('/api/login', async(ctx, next) => {
             if (data.selfset) {
                 const arr = data.selfset.split(/;|；/);
                 arr.forEach(item => {
-                    selfset[item] = true;
+                    if (item) {
+                        selfset[item] = true;
+                    }
                 })
             }
             data.selfset = selfset;
@@ -98,21 +100,40 @@ router.post('/api/login', async(ctx, next) => {
 
 router.post('/api/updateUserInfo', async ctx => {
     const data = _.cloneDeep(ctx.request.body);
+    console.log(data)
     const userId = data.userId;
     let selfset = '';
-    const originSelfset = data.selfset;
     delete data.userId;
     for (let item in data.selfset) {
         selfset += _.isString(item) ? item +';' : '';
     }
     data.selfset = selfset;
     await query('update userInfo set ? where ?', [data, {userId}]);
-    data.selfset = originSelfset;
-    data.userId = userId;
+    const newData = await new Promise((resolve, reject) => {
+        pool.query({
+            sql: "select * from userInfo where userId = ?",
+            timeout: 10000,
+            values: [userId]
+        }, (err, res, field) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(res);
+        })
+    })
+    let newSelfset = {};
+    if (newData[0].selfset) {
+        const arr = newData[0].selfset.split(/;|；/);
+        arr.forEach(item => {
+            newSelfset[item] = true;
+        })
+    }
+    newData[0].selfset = newSelfset;
     ctx.status = 200;
     ctx.body = {
         success: true,
-        data
+        data: newData[0]
     }
 })
 
@@ -131,9 +152,10 @@ router.post('/api/recentRecord', async ctx => {
             resolve(res);
         })
     })
-    
+    delete data.selfset;
     data.recentStudy = `${data.courseId};${oldData[0].recentStudy || ''}`;
     delete data.courseId;
+    
     await query('update userInfo set ? where ?', [data, {userId: data.userId}]);
     const res = await new Promise((resolve, reject) => {
         pool.query({
@@ -148,7 +170,14 @@ router.post('/api/recentRecord', async ctx => {
             resolve(res);
         })
     })
-    
+    let newSelfset = {};
+    if (res[0].selfset) {
+        const arr = res[0].selfset.split(/;|；/);
+        arr.forEach(item => {
+            newSelfset[item] = true;
+        })
+    }
+    res[0].selfset = newSelfset;
     ctx.status = 200;
     ctx.body = {
         success: true,

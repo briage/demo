@@ -1,6 +1,6 @@
 import {pool} from '../middlewares/mysql';
 
-const query = (sql: string, values?: Array<any>) => new Promise((resolve, reject) => {
+const query = (sql: string, values?: Array<any> | {[key: string]: any}) => new Promise((resolve, reject) => {
     pool.query({
         sql,
         timeout: 100000,
