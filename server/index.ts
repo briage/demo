@@ -8,7 +8,7 @@ const path = require('path');
 const router = require('./middlewares/router').router;
 const koaBody = require('koa-body');
 const sourceLoad = require('./middlewares/source-load').sourceLoad;
-
+const liveLoad = require('./middlewares/live').liveLoad;
 
 
 process.env.NODE_ENV = process.env.NODE_ENV === undefined ? 'development' : process.env.NODE_ENV;
@@ -23,6 +23,7 @@ app.use(koaBody({
 }));
 app.use(router.routes());
 app.use(sourceLoad);
+app.use(liveLoad)
 async function start() {
     const middleware = await koaWebpack({ compiler });
     app.use(middleware);

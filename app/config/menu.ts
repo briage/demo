@@ -51,6 +51,12 @@ const MENU_LIST: Array<Menu> = [
         link: '/user-center',
         icon: 'bar',
         auth: 1
+    }, {
+        key: 'live',
+        text: '直播专区',
+        link: '/live',
+        icon: 'bar',
+        auth: 2
     }
 ];
 

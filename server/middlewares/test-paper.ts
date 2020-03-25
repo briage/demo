@@ -33,7 +33,8 @@ async function autoCreateTestPaper(data) {
     if (selfset) {
         for (let item in selfset) {
             if (STAGE[item]) {
-                data.labels += item;
+                data.labels = item;
+                return;
             }
         }
     }
@@ -42,7 +43,7 @@ async function autoCreateTestPaper(data) {
         sql += ' and ?'
     }
     if (data.labels) {
-        sql += ` and labels like '%${data.labels}%'`;
+        sql += ` and labels like '%${data.labels.replace(new RegExp('', 'g'), '%')}%'`;
     }
     if (+data.onlyChoiceNum) {
         let value = _.cloneDeep(values);
@@ -242,5 +243,35 @@ router.post('/api/test-paper/deleteTestPaper', async ctx => {
     ctx.body = {
         success: true,
         data: res
+    }
+})
+
+router.post('/api/test-paper/recordData', async ctx => {
+    const data = ctx.request.body;
+    const { testpaperInfo, rightAnswerList } = data;
+    const [currentTestPaperInfo, currentProblemInfoList] = 
+    await Promise.all([testpaperInfo && query('select * from testpapers where ?', {testpaperId: testpaperInfo.testpaperId}),
+    Promise.all(rightAnswerList.map(item => query('select * from problems where ?', {problemId: item.problemId})))]);
+    if (currentTestPaperInfo[0]) {
+        currentTestPaperInfo[0].normalGoal = Math.round((testpaperInfo.studentGoal + (currentTestPaperInfo[0].usedCount * (+currentTestPaperInfo[0].normalGoal || 0))) / (currentTestPaperInfo[0].usedCount + 1));
+        currentTestPaperInfo[0].diffculty = Math.ceil(((currentTestPaperInfo[0].totalGoal - currentTestPaperInfo[0].normalGoal) / currentTestPaperInfo[0].totalGoal) * 5);
+        +currentTestPaperInfo[0].usedCount ++;
+    }
+    const newProblemInfoList = (currentProblemInfoList as any[]).map((item, index) => {
+        if (rightAnswerList[index].result) {
+            item[0].achivementRate = Math.ceil((((item[0].achivementRate / 100) * (+item[0].usedNum || 0) + 1) / (((+item[0].usedNum) || 0) + 1)) * 100);
+        } else {
+            item[0].achivementRate = Math.ceil((((item[0].achivementRate / 100) * (+item[0].usedNum || 0)) / (((+item[0].usedNum) || 0) + 1)) * 100);
+        }
+        item[0].diffculty = Math.ceil((100 - item[0].achivementRate) / 20);
+        +item[0].usedNum ++;
+        return item[0];
+    })
+    await Promise.all([testpaperInfo && query('update testpapers set ? where ?', [currentTestPaperInfo[0], {testpaperId: currentTestPaperInfo[0].testpaperId}]), 
+        Promise.all(newProblemInfoList.map(item => query('update problems set ? where ?', [item, {problemId: item.problemId}])))
+    ])
+    ctx.status = 200;
+    ctx.body = {
+        success: true
     }
 })

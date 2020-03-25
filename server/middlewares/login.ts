@@ -100,14 +100,22 @@ router.post('/api/login', async(ctx, next) => {
 
 router.post('/api/updateUserInfo', async ctx => {
     const data = _.cloneDeep(ctx.request.body);
-    console.log(data)
     const userId = data.userId;
     let selfset = '';
     delete data.userId;
-    for (let item in data.selfset) {
-        selfset += _.isString(item) ? item +';' : '';
+    if (data.selfset) {
+        for (let item in data.selfset) {
+            selfset += _.isString(item) ? item +';' : '';
+        }
+        data.selfset = selfset;
     }
-    data.selfset = selfset;
+    if (_.isNumber(data.rightNum)) {
+        const currentUserInfo = (await query('select * from userInfo where ?', {userId}))[0];
+        data.achievementRate = (((currentUserInfo.achievementRate / 100) * +currentUserInfo.praticeNum + data.rightNum) / ((+currentUserInfo.praticeNum || 0) + data.praticeNum)) * 100;
+        data.praticeNum += (+currentUserInfo.praticeNum) || 0;
+    }
+    delete data.rightNum;
+    
     await query('update userInfo set ? where ?', [data, {userId}]);
     const newData = await new Promise((resolve, reject) => {
         pool.query({

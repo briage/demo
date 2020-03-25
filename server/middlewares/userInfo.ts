@@ -73,12 +73,28 @@ router.post('/api/error-book/queryErrorBookInfo', async ctx => {
 
 router.post('/api/error-book/updateErrorBook', async ctx => {
     const data = ctx.request.body;
-    const {errorTestBookId} = data;
-    const oldErrorInfo = await query('select * from errortestbook where ?', {errorTestBookId})[0];
-    oldErrorInfo.onlyChoiceIds += data.onlyChoiceIds || '';
-    oldErrorInfo.multifyChoiceIds += data.multifyChoiceIds || '';
-    oldErrorInfo.listenIds += data.listenIds || '';
-    await query('update errortestbook set ? where ?', [oldErrorInfo, {errorTestBookId}]);
+    const {errorTestBookId, errorList, rightList} = data;
+    const oldErrorInfo = await query('select * from errortestbook where ?', {errorTestBookId});
+    oldErrorInfo[0].onlyChoiceIds += errorList.onlyChoiceIds || '';
+    oldErrorInfo[0].multifyChoiceIds += errorList.multifyChoiceIds || '';
+    oldErrorInfo[0].listenIds += errorList.listenIds || '';
+    
+    rightList.onlyChoiceIds && 
+    rightList.onlyChoiceIds.split(/;|；/)
+    .forEach(item => oldErrorInfo[0].onlyChoiceIds = item ? oldErrorInfo[0].onlyChoiceIds.replace(new RegExp(`${item};`, 'g'), ''): oldErrorInfo[0].onlyChoiceIds);
+    
+    rightList.multifyChoiceIds && 
+    rightList.multifyChoiceIds.split(/;|；/)
+    .forEach(item => oldErrorInfo[0].multifyChoiceIds = item ? oldErrorInfo[0].multifyChoiceIds.replace(new RegExp(`${item};`, 'g'), ''): oldErrorInfo[0].multifyChoiceIds);
+    
+    rightList.listenIds && 
+    rightList.listenIds.split(/;|；/)
+    .forEach(item => oldErrorInfo[0].listenIds = item ? oldErrorInfo[0].listenIds.replace(new RegExp(`${item};`, 'g'), ''): oldErrorInfo[0].listenIds);
+    
+    oldErrorInfo[0].onlyChoiceIds = [... new Set(oldErrorInfo[0].onlyChoiceIds.split(/;|；/))].join(';');
+    oldErrorInfo[0].multifyChoiceIds = [... new Set(oldErrorInfo[0].multifyChoiceIds.split(/;|；/))].join(';');
+    oldErrorInfo[0].listenIds = [... new Set(oldErrorInfo[0].listenIds.split(/;|；/))].join(';');
+    await query('update errortestbook set ? where ?', [oldErrorInfo[0], {errorTestBookId}]);
     ctx.status = 200;
     ctx.body = {
         success: true,

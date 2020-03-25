@@ -10,5 +10,6 @@ import './node-manager';
 import './test-manager';
 import './test-paper';
 import './userInfo';
+import './live';
 
 export {router};
