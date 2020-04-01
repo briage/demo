@@ -4,7 +4,7 @@ import koaBody from 'koa-body';
 import { query } from '../util/index';
 import _ from 'lodash';
 
-interface createCourseRes {
+export interface createCourseRes {
     affectedRows: number,
     changedRows: number,
     fieldCount: number,

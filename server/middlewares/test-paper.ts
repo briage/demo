@@ -15,7 +15,6 @@ const STAGE = {
 
 async function queryProblemIds(sql, values, num) {
     const res: any[] = <any[]>(await query(sql, values));
-    console.log(sql, values, res)
     let ids = '';
     for (let i = 0; i < +num; i ++) {
         let index = Math.floor(Math.random() * res.length);
@@ -34,7 +33,7 @@ async function autoCreateTestPaper(data) {
         for (let item in selfset) {
             if (STAGE[item]) {
                 data.labels = item;
-                return;
+                break;
             }
         }
     }

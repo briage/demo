@@ -56,7 +56,7 @@ const MENU_LIST: Array<Menu> = [
         text: '直播专区',
         link: '/live',
         icon: 'bar',
-        auth: 2
+        auth: 1
     }
 ];
 

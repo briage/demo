@@ -9,8 +9,9 @@ router.post('/api/upload', async ctx => {
         key = item;
     }
     const reader = fs.createReadStream(files[key].path);
-    const filePath = `D:/lbhSource/${files[key].type.match('image') ? 'img' : 'video'}/${files[key].name}`;
-    const remoteFilePath = `http://192.168.43.136:8888/server/static/${files[key].type.match('image') ? 'img' : 'video'}/${files[key].name}`;
+    const fileName = new Date().getTime() + Math.floor(Math.random() * 100000);
+    const filePath = `D:/lbhSource/${files[key].type.match('image') ? 'img' : 'video'}/${fileName}.${files[key].name.split('.').pop()}`;
+    const remoteFilePath = `http://192.168.43.136:8888/server/static/${files[key].type.match('image') ? 'img' : 'video'}/${fileName}.${files[key].name.split('.').pop()}`;
     const wR = fs.createWriteStream(filePath);
     reader.pipe(wR);
     ctx.status = 200;

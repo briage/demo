@@ -61,12 +61,6 @@ const routers: Array<RouterList> = [
         exact: true,
         auth: 1,
         component: routerComponent(<UserCenter />)
-    }, {
-        key: 'live',
-        path: '/live',
-        exact: true,
-        auth: 2,
-        component: routerComponent(<Live />)
     }
 ];
 

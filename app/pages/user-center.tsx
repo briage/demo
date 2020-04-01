@@ -2,7 +2,7 @@ import * as React from 'react';
 import axios from 'axios';
 import { Grid, GridProps } from '../components/core/grid';
 import { FormContorl } from  '../components/form-components/form-contorl';
-import { message } from 'antd';
+import { message, Button } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -47,7 +47,13 @@ function UserCenter(props) {
             type: 1,
             phone: undefined
         },
-        tableData: []
+        tableData: [],
+        editData: {
+            restMoney: 0,
+            type: 1,
+            introduce: ''
+        },
+        dialogVisble: false
     }
 
     const [state, setState] = useState(initalState);
@@ -62,6 +68,34 @@ function UserCenter(props) {
         setState(newState);
     }
 
+    const edit = (line) => {
+        const newState = _.cloneDeep(state);
+        newState.editData = line;
+        newState.dialogVisble = true;
+        setState(newState);
+    }
+
+    const handleDialogChange = (key, value) => {
+        const newState = _.cloneDeep(state);
+        if (key === 'type') {
+            newState.editData.type = value;
+        } else {
+            newState.editData[key] = value.target.value;
+        }
+        setState(newState);
+    }
+
+    const save = () => {
+        const data = _.cloneDeep(state.editData)
+        axios.post('/api/updateUserInfo', data)
+            .then(res => {
+                if (res.data.success) {
+                    gridProps.onFetchContent();
+                    message.success('修改成功');
+                }
+            })
+    }
+
     const gridProps: GridProps = {
         gridOptions: [
             { key: 'userId', dataIndex: 'userId', title: '用户ID' },
@@ -69,7 +103,10 @@ function UserCenter(props) {
             { key: 'phone', dataIndex: 'phone', title: '手机号' },
             { key: 'sex', dataIndex: 'sex', title: '性别', render: d => SEX[d] },
             { key: 'email', dataIndex: 'email', title: '邮箱' },
-            { key: 'type', dataIndex: 'type', title: '身份', render: d => TYPE[d] }
+            { key: 'type', dataIndex: 'type', title: '身份', render: d => TYPE[d] },
+            userInfo && +userInfo.type === 4 && { key: 'operation', dataIndex: 'userId', title: '操作', render: (d, line) => [
+                <Button onClick={() => edit(line)}>编辑</Button>
+            ] }
         ],
         tableData: state.tableData,
         searchRender: () => [
@@ -101,6 +138,19 @@ function UserCenter(props) {
                     message.error(err);
                     console.error(err);
                 })
+        },
+        dialogContentRender: () => [
+            <FormContorl key='type' label='身份' layout={1} value={+state.editData.type} type='select' options={TYPE} onChange={handleDialogChange.bind(this, 'type')} />,
+            <FormContorl key='restMoney' label='余额' type='number' value={+state.editData.restMoney} onChange={handleDialogChange.bind(this, 'restMoney')} />,
+            <FormContorl key='info' label='个人简介' type='textarea' value={state.editData.introduce} onChange={handleDialogChange.bind(this, 'introduce')} />
+        ],
+        dialogTitle: '充值/修改用户身份',
+        dialogVisable: state.dialogVisble,
+        onDialogFormSubmit: save,
+        onCloseDialog: () => {
+            const newState = _.cloneDeep(state);
+            newState.dialogVisble = false;
+            setState(newState);
         }
     }
 

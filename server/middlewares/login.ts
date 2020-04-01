@@ -1,12 +1,11 @@
 import {router} from './router';
 import { pool } from './mysql';
-import koaBody from 'koa-body';
 import _ from 'lodash';
 import { query } from '../util';
+import { createCourseRes } from './course'
 
 router.post('/api/login', async(ctx, next) => {
     const data = ctx.request.body;
-    console.log('login')
     const res = await new Promise((resolve, reject) => {
         pool.query({
             sql: "select * from userInfo where phone = ?",
@@ -52,6 +51,12 @@ router.post('/api/login', async(ctx, next) => {
         data.avatar = data.avatar || 'http://192.168.43.136:8888/server/static/img/user.jpeg';
         data.type = 1;
         data.restMoney = 0;
+        delete data.selfset;
+        for (let item in data) {
+            if (data[item] === undefined) {
+                delete data[item];
+            }
+        }
         await query('insert into userInfo set ?', data);
         const res = await new Promise((resolve, reject) => {
             pool.query({
@@ -67,29 +72,10 @@ router.post('/api/login', async(ctx, next) => {
             })
         })
         const resData = res[0]
-        await query('insert into errortestbook set ?', [{userId: resData.userId}]);
-        const errorTestId = await new Promise((resolve, reject) => {
-            pool.query({
-                sql: "select * from errortestbook where userId = ?",
-                timeout: 10000,
-                values: [resData.userId]
-            }, (err, res, field) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                resolve(res);
-            })
-        })
-        resData.errorTestId = errorTestId[0].errorTestBookId;
-        let selfset = {};
-        if (resData.selfset) {
-            const arr = resData.selfset.split(/;|；/);
-            arr.forEach(item => {
-                selfset[item] = true;
-            })
-        }
-        resData.selfset = selfset;
+        const errorbookInfo: createCourseRes = <createCourseRes>(await query('insert into errortestbook set ?', [{userId: resData.userId}]));
+        resData.errorTestId = errorbookInfo.insertId;
+        await query('update userInfo set ? where ?', [resData, {phone: resData.phone}])
+        resData.selfset = {};
         ctx.body = {
             success: true,
             data: resData,
@@ -100,12 +86,14 @@ router.post('/api/login', async(ctx, next) => {
 
 router.post('/api/updateUserInfo', async ctx => {
     const data = _.cloneDeep(ctx.request.body);
+    const phone = data.phone;
     const userId = data.userId;
     let selfset = '';
-    delete data.userId;
     if (data.selfset) {
         for (let item in data.selfset) {
-            selfset += _.isString(item) ? item +';' : '';
+            if (item && _.isNaN(+item)) {
+                selfset += _.isString(item) ? item +';' : '';
+            }
         }
         data.selfset = selfset;
     }
@@ -115,13 +103,12 @@ router.post('/api/updateUserInfo', async ctx => {
         data.praticeNum += (+currentUserInfo.praticeNum) || 0;
     }
     delete data.rightNum;
-    
-    await query('update userInfo set ? where ?', [data, {userId}]);
+    await query('update userInfo set ? where ?', [data, {phone}]);
     const newData = await new Promise((resolve, reject) => {
         pool.query({
-            sql: "select * from userInfo where userId = ?",
+            sql: "select * from userInfo where phone = ?",
             timeout: 10000,
-            values: [userId]
+            values: [phone]
         }, (err, res, field) => {
             if (err) {
                 reject(err);
@@ -134,7 +121,9 @@ router.post('/api/updateUserInfo', async ctx => {
     if (newData[0].selfset) {
         const arr = newData[0].selfset.split(/;|；/);
         arr.forEach(item => {
-            newSelfset[item] = true;
+            if (item && _.isNaN(+item)) {
+                newSelfset[item] = true;
+            }
         })
     }
     newData[0].selfset = newSelfset;
@@ -161,7 +150,7 @@ router.post('/api/recentRecord', async ctx => {
         })
     })
     delete data.selfset;
-    data.recentStudy = `${data.courseId};${oldData[0].recentStudy || ''}`;
+    data.recentStudy = [...new Set(`${data.courseId};${oldData[0].recentStudy || ''}`.split(/;|；/))].join(';');
     delete data.courseId;
     
     await query('update userInfo set ? where ?', [data, {userId: data.userId}]);

@@ -8,6 +8,7 @@ import { MenuList } from './menu';
 import { ContentComponent } from './content';
 import Breadcrumbs from './Breadcrumb';
 import { Login } from '../../pages/login';
+import { Live } from '../../pages/live';
 
 const { Header, Content, Sider } = Layout;
 export class PageLayout extends React.Component {
@@ -45,6 +46,9 @@ export class PageLayout extends React.Component {
                 <Switch>
                     <Route key='login' exact={true} path='/login' >
                         <Login/>
+                    </Route>
+                    <Route key='live' exact={true} path='/live'>
+                        <Live />
                     </Route>
                     <Route key='content' path='/'>
                         <Layout key='layout' style={{height: '100vh'}}>

@@ -8,7 +8,6 @@ const path = require('path');
 const router = require('./middlewares/router').router;
 const koaBody = require('koa-body');
 const sourceLoad = require('./middlewares/source-load').sourceLoad;
-const liveLoad = require('./middlewares/live').liveLoad;
 
 
 process.env.NODE_ENV = process.env.NODE_ENV === undefined ? 'development' : process.env.NODE_ENV;
@@ -21,9 +20,15 @@ app.use(koaBody({
       maxFileSize: 2000 * 1024 * 1024    // 设置上传文件大小最大限制，默认2M
   }
 }));
+// const websocket = new WS.Server({path: '192.168.43.136', port: 9999});
+// websocket.on('connection', ws => {
+//   console.log('已连接')
+//   ws.on('message', data => {
+//     console.log(data)
+//   })
+// })
 app.use(router.routes());
 app.use(sourceLoad);
-app.use(liveLoad)
 async function start() {
     const middleware = await koaWebpack({ compiler });
     app.use(middleware);

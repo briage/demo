@@ -4,9 +4,7 @@ import { pool } from './mysql';
 
 router.post('/api/getUserInfo', async ctx => {
     const data = ctx.request.body;
-    console.log(data)
     const res = await query('select * from userInfo where ?', data);
-    console.log(data, res[0])
     ctx.status = 200;
     ctx.body = {
         success: true,
@@ -75,9 +73,9 @@ router.post('/api/error-book/updateErrorBook', async ctx => {
     const data = ctx.request.body;
     const {errorTestBookId, errorList, rightList} = data;
     const oldErrorInfo = await query('select * from errortestbook where ?', {errorTestBookId});
-    oldErrorInfo[0].onlyChoiceIds += errorList.onlyChoiceIds || '';
-    oldErrorInfo[0].multifyChoiceIds += errorList.multifyChoiceIds || '';
-    oldErrorInfo[0].listenIds += errorList.listenIds || '';
+    oldErrorInfo[0].onlyChoiceIds = oldErrorInfo[0].onlyChoiceIds || '' + errorList.onlyChoiceIds || '';
+    oldErrorInfo[0].multifyChoiceIds = oldErrorInfo[0].multifyChoiceIds || '' + errorList.multifyChoiceIds || '';
+    oldErrorInfo[0].listenIds = oldErrorInfo[0].listenIds || '' + errorList.listenIds || '';
     
     rightList.onlyChoiceIds && 
     rightList.onlyChoiceIds.split(/;|；/)
