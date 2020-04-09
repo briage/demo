@@ -46,6 +46,12 @@ const MENU_LIST: Array<Menu> = [
         icon: 'bar',
         auth: 2
     }, {
+        key: 'mission',
+        text: '任务管理',
+        link: '/mission',
+        icon: 'bar',
+        auth: 2
+    }, {
         key: 'user-center',
         text: '用户中心',
         link: '/user-center',

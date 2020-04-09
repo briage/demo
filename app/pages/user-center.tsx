@@ -131,6 +131,7 @@ function UserCenter(props) {
                         message.success('查询成功');
                         const newState = _.cloneDeep(state);
                         newState.tableData = res.data.data;
+                        newState.dialogVisble = false;
                         setState(newState);
                     }
                 })

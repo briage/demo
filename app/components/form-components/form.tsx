@@ -1,6 +1,5 @@
 import * as React from 'react';
 import _ from 'lodash';
-// import { Form } from 'antd';
 
 interface FormProps {
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void,

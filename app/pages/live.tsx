@@ -1,8 +1,11 @@
 import * as React from 'react';
+import { Redirect } from 'react-router-dom';
 
 function Live(props) {
+    location.href='https://videocall.agora.io/#/'
     return (
-        <iframe style={{border: '0'}} src='https://videocall.agora.io' width='100%' height='100%' />
+       <>
+       </>
     )
 }
 

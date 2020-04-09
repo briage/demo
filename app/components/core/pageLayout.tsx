@@ -56,15 +56,13 @@ export class PageLayout extends React.Component {
                                 <HeaderContent key='header-content' userInfo={this.state.userInfo} />
                             </Header>
                             <Layout>
-                                <BrowserRouter key='browser-router' basename='/'>
-                                    <Sider key='browser-sider' className='sider-menu'>
-                                        <MenuList key='menu-list' userInfo={this.state.userInfo} />
-                                    </Sider>
-                                    <Content>
-                                        <Breadcrumbs key='breadcrumbs' />
-                                        <ContentComponent key='content' userInfo={this.state.userInfo} />
-                                    </Content>
-                                </BrowserRouter>
+                            <Sider key='browser-sider' className='sider-menu'>
+                                <MenuList key='menu-list' userInfo={this.state.userInfo} />
+                            </Sider>
+                            <Content>
+                                <Breadcrumbs key='breadcrumbs' />
+                                <ContentComponent key='content' userInfo={this.state.userInfo} />
+                            </Content>
                             </Layout>
                         </Layout>
                     </Route>

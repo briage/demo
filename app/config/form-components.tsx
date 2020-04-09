@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Input, Select, Radio, Upload } from 'antd';
+import { Input, Select, Radio, Upload, DatePicker } from 'antd';
 import { Props, OptionsArrayItem } from '../components/form-components/form-contorl';
 import { MultifyInput } from '../components/form-components/multify-input';
 
@@ -48,6 +48,9 @@ const FormComponents_Map: Array<FormComponents_Item> = [
     }, {
         type: 'multify-input',
         component: props => <MultifyInput {...props} />
+    }, {
+        type: 'date',
+        component: props => <DatePicker {...props} />
     }
 ]
 

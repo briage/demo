@@ -7,6 +7,7 @@ import { NodeManager } from '../pages/node-manager';
 import { TestManager } from '../pages/test-manager';
 import { UserCenter } from '../pages/user-center';
 import { Live } from '../pages/live';
+import { Mission } from '../pages/mission';
 
 const { Suspense } = React;
 
@@ -55,6 +56,12 @@ const routers: Array<RouterList> = [
         exact: true,
         auth: 2,
         component: routerComponent(<TestManager />)
+    }, {
+        key: 'mission',
+        path: '/mission',
+        exact: true,
+        auth: 2,
+        component: routerComponent(<Mission />)
     }, {
         key: 'user-center',
         path: '/user-center',

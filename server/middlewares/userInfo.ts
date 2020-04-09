@@ -2,16 +2,6 @@ import { router } from './router';
 import { query } from '../util';
 import { pool } from './mysql';
 
-router.post('/api/getUserInfo', async ctx => {
-    const data = ctx.request.body;
-    const res = await query('select * from userInfo where ?', data);
-    ctx.status = 200;
-    ctx.body = {
-        success: true,
-        data: res
-    }
-})
-
 router.post('/api/joinCourse', async ctx => {
     const data = ctx.request.body;
     const { userId, courseId } = data;
@@ -43,10 +33,12 @@ router.post('/api/joinCourse', async ctx => {
     })
     let courseIds = userInfo[0].courseIds || '';
     let studentIds = courseInfo[0].studentIds || '';
+    let customMoney = userInfo[0].customMoney || 0;
     userInfo[0].restMoney -= courseInfo[0].money;
     courseIds += `${courseId};`;
-    studentIds += `${userId};`
-    await query('update userInfo set ? where ?', [{courseIds, restMoney: userInfo[0].restMoney }, {userId}]);
+    studentIds += `${userId};`;
+    customMoney += courseInfo[0].money;
+    await query('update userInfo set ? where ?', [{courseIds, restMoney: userInfo[0].restMoney, customMoney }, {userId}]);
     await query('update class set ? where ?', [{studentIds}, {courseId}]);
     userInfo[0].courseIds = courseIds;
     ctx.status = 200;
