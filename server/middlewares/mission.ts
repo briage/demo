@@ -10,7 +10,6 @@ router.post('/api/mission/queryMissionList', async ctx => {
     const currentTime = data.currentTime;
     delete data.currentTime;
     delete data.courseIds;
-    console.log
     for (let item in data) {
         if (data[item]) {
             sql += sql.match('where') ? ' and ?' : ' where ?';
@@ -56,8 +55,15 @@ router.post('/api/mission/createMission', async ctx => {
 })
 
 router.post('/api/mission/updateMission', async ctx => {
-    const data = ctx.request.body;
-    const missionId = data.missionId;
+    const { missionId, testpaperId, startTime, creatorId, message, courseId, endTime } = ctx.request.body;
+    const data = {
+        testpaperId,
+        startTime,
+        creatorId,
+        message,
+        courseId,
+        endTime
+    }
     await query('update missions set ? where ?', [data, { missionId }]);
     ctx.status = 200;
     ctx.body = {

@@ -34,17 +34,20 @@ router.post('/api/joinCourse', async ctx => {
     let courseIds = userInfo[0].courseIds || '';
     let studentIds = courseInfo[0].studentIds || '';
     let customMoney = userInfo[0].customMoney || 0;
+    const selfset = {};
     userInfo[0].restMoney -= courseInfo[0].money;
     courseIds += `${courseId};`;
     studentIds += `${userId};`;
     customMoney += courseInfo[0].money;
     await query('update userInfo set ? where ?', [{courseIds, restMoney: userInfo[0].restMoney, customMoney }, {userId}]);
     await query('update class set ? where ?', [{studentIds}, {courseId}]);
-    userInfo[0].courseIds = courseIds;
+    const newUserInfo = (await query('select * from userInfo where ?', {userId}))[0];
+    newUserInfo.selfset.split(/;|；/).forEach(item => selfset[item] = true);
+    newUserInfo.selfset = selfset;
     ctx.status = 200;
     ctx.body = {
         success: true,
-        data: userInfo[0]
+        data: newUserInfo
     }
 })
 

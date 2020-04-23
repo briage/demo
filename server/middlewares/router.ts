@@ -11,5 +11,6 @@ import './test-manager';
 import './test-paper';
 import './userInfo';
 import './mission';
+import './card'
 
 export {router};

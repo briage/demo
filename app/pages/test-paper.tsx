@@ -138,7 +138,6 @@ function TestPaper(props) {
             { key: 'multifyChoiceIds', dataIndex: 'multifyChoiceIds', title: '多选题ID' },
             { key: 'listenIds', dataIndex: 'listenIds', title: '听力题ID' },
             { key: 'writeIds', dataIndex: 'writeIds', title: '写作题ID' },
-            { key: 'teacherId', dataIndex: 'teacherId', title: '批卷人ID' },
             { key: 'creatorId', dataIndex: 'creatorId', title: '操作人' },
             { key: 'createTime', dataIndex: 'createTime', title: '操作时间', render: d => moment(d).format('YYYY-MM-DD HH:mm:ss') },
             { key: 'action', dataIndex: 'testpaperId', title: '操作', render: (d, line) => [
@@ -195,7 +194,6 @@ function TestPaper(props) {
                     <FormContorl type='number' name='listenNum' key='listenNum' label='听力题数量' min={0} value={state.editData.listenNum} />,
                     <FormContorl type='number' name='writeNum' key='writeNum' label='写作题数量' min={0} value={state.editData.writeNum} />,
                 ] }
-                <FormContorl type='number' key='teacherId' name='teacherId' label='阅卷老师ID' value={state.editData.teacherId} placeholder='若无阅卷老师可不填' />
             </Form>
         ),
         onDialogFormSubmit: () => {
