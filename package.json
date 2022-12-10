@@ -52,7 +52,7 @@
     "jest": "^25.1.0",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
-    "koa-bodyparser": "^3.2.0",
+    "koa-bodyparser": "^4.3.0",
     "koa-router": "^8.0.8",
     "koa-webpack": "^5.3.0",
     "koa-webpack-dev-middleware": "^2.0.2",
